@@ -1,4 +1,4 @@
-import requests
+import requests, json
 
 class Device:
     def __init__(self, device_type, device_name, address, state):
@@ -19,17 +19,24 @@ class Device:
         print('============================')
 
     def changeState(self):
-        if self.state is not 'OFF':
+
+        if self.state == 'ON':
             self.state = 'OFF'
         else:
             self.state = 'ON'
-        print('labadaba')
+
         self.update()
         self.printDevice()
+
     def update(self):
-        r = requests.put(self.url +'/item/' + self.device_name + ' / put', data ={'state': self.state})
+        header = {'Content-Type':'application/json'}
+        r_to_str = "{}{}{}".format(self.url, '/item/', self.device_name)
+        body = {'state': self.state}
+
+        r = requests.put(r_to_str, verify=False, json={'state': self.state})
+        print(r.headers)
         print(r)
-        
+
 class DeviceManager:
     def __init__(self):
         self.url = 'http://127.0.0.1:5000'

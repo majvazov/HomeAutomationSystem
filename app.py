@@ -3,7 +3,7 @@ from flask_restful import Resource, Api
 
 app = Flask(__name__)
 api = Api(app)
-app.secret_key = 'jose'
+app.secret_key = 'nostradamus'
 items = []
 
 class Item(Resource):
@@ -19,6 +19,21 @@ class Item(Resource):
         item = {'name': name, 'type': data['type'], 'address' : data['address'], 'state' : data['state']}
         items.append(item)
         return item, 201
+
+    def put(self, name):
+        data = request.get_json()
+        device_data = {}
+
+        if not next(filter(lambda x: x['name'] == name, items), None):
+            return {'message': "An item with name '{}' does not exists".format(name)}, 400
+
+        for item in items:
+            if item['name'] == name:
+                device_data = item
+                device_data['state'] = data['state']
+                item['state'] = data['state']
+
+        return data, 201
 
 class ItemList(Resource):
     def get(self):
