@@ -1,10 +1,21 @@
 from flask import Flask, request, render_template, make_response
 from flask_restful import Resource, Api
+import requests
 
 app = Flask(__name__)
 api = Api(app)
 app.secret_key = 'nostradamus'
-items = []
+relay1 ={
+            "name": "ESP1",
+            "type": "ESP32",
+            "address": "192.168.1.6",
+            "state": "ON"}
+relay2 = {
+            "name": "ESP2",
+            "type": "ESP32",
+            "address": "192.168.1.7",
+            "state": "ON"}
+items = [relay1, relay2]
 
 class Item(Resource):
     def get(self, name):
@@ -29,6 +40,17 @@ class Item(Resource):
 
         for item in items:
             if item['name'] == name:
+                url = 'http://' + item['address']
+                d = 'relayon'
+                if(data['state'] == 'OFF'):
+                    d = 'relayoff'
+
+                param = d
+                r = requests.get(url, params=param)
+                print(r.request.url)
+                print(r.request.body)
+                print(r.request.headers)
+                print(r)
                 device_data = item
                 device_data['state'] = data['state']
                 item['state'] = data['state']
