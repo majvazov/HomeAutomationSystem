@@ -43,21 +43,25 @@ class Window(QWidget):
         self.espState = False
         #self.second_key = str(randint(10000, 99999))
         self.setWindowTitle('IoT Device Manager')
-        self.resize(500, 120)
+        self.resize(250, 120)
         self.devices = DeviceManager()
         layout = QGridLayout()
+
+        label_key = QLabel('<font size="4"> Device1 </font>')
+        layout.addWidget(label_key, 0, 0)
+
+        label_key = QLabel('<font size="4"> Device2 </font>')
+        layout.addWidget(label_key, 1, 0)
 
         ch_bx1 = MySwitch()
         ch_bx1.setChecked(True)
         ch_bx1.clicked.connect(self.changeStateOne)
-        layout.addWidget(ch_bx1, 0, 0, 1, 2)
-
-        #self.device = Device('ESP32', 'ESP1', '192.168.12.11', "OFF")
+        layout.addWidget(ch_bx1, 0, 1, 1, 2)
 
         ch_bx3 = MySwitch()
         ch_bx3.setChecked(True)
         ch_bx3.clicked.connect(self.changeStateTwo)
-        layout.addWidget(ch_bx3, 1, 0, 1, 2)
+        layout.addWidget(ch_bx3, 1, 1, 1, 2)
 
         self.setLayout(layout)
 

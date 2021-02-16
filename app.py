@@ -5,17 +5,17 @@ import requests
 app = Flask(__name__)
 api = Api(app)
 app.secret_key = 'nostradamus'
-relay1 ={
+device1 ={
             "name": "ESP1",
             "type": "ESP32",
             "address": "192.168.1.6",
             "state": "ON"}
-relay2 = {
+device2 = {
             "name": "ESP2",
             "type": "ESP32",
             "address": "192.168.1.7",
             "state": "ON"}
-items = [relay1, relay2]
+items = [device1, device2]
 
 class Item(Resource):
     def get(self, name):
@@ -56,6 +56,21 @@ class Item(Resource):
                 item['state'] = data['state']
 
         return data, 201
+
+    def delete(self, name):
+        data = request.get_json()
+        device_data = {}
+
+        if not next(filter(lambda x: x['name'] == name, items), None):
+            return {'message': "An item with name '{}' does not exists".format(name)}, 400
+
+        for item in items:
+            if item['name'] == name:
+                items.remove(item)
+
+        return {'message' : "{} was successfully removed".format(name)}, 201
+
+
 
 class ItemList(Resource):
     def get(self):
